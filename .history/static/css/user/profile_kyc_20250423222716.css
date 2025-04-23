@@ -1,0 +1,138 @@
+/* Profile and KYC Pages CSS */
+
+body {
+    background-color: #3c497e;
+    color: #c5c6c7;
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: #1f2833;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px #45a29e;
+    width: 90%;
+    max-width: 500px;
+}
+
+.container h2 {
+    text-align: center;
+    color: #66fcf1;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #c5c6c7;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    background-color: #0b0c10;
+    border: 1px solid #66fcf1;
+    border-radius: 8px;
+    color: #c5c6c7;
+    font-size: 14px;
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: #45a29e;
+    color: #0b0c10;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #66fcf1;
+}
+
+.note {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-top: 10px;
+}
+
+input[type="file"] {
+    padding: 10px;
+}
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.flash.success {
+    background-color: #45a29e;
+    color: #0b0c10;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.transaction-table th, .transaction-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #444;
+}
+
+.transaction-table th {
+    background-color: #222;
+    color: #00ff99;
+    font-weight: bold;
+}
+
+.transaction-table tr:hover {
+    background-color: #333;
+}
+.notification-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.notification-item {
+    background-color: #222;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 5px solid #00ff99;
+}
+
+.notification-item.success {
+    border-color: #28a745;
+}
+
+.notification-item.info {
+    border-color: #17a2b8;
+}
+
