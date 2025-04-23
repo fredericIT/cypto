@@ -19,9 +19,8 @@ def auth():
 @auth_bprt.route("/register",methods=["GET","POST"])
 @handle_sqlalchemy_error(redirect_url="auth.register") 
 def register():
-    
+    session.pop('_flashes', None)
     if request.method == 'POST': 
-        session.pop('_flashes', None)
         hashed_pwd=bcrypt.hashpw(request.form['password'].encode(), bcrypt.gensalt()).decode()
         user = User(
             full_name=request.form['full_name'],
@@ -44,32 +43,32 @@ def register():
  
         BTC_address = BTCWallet(
             user_id=user.id,
-            deposit="bc1qrynf3yt0w524mtca7q0t8hs4ufpd8fj5dg2855",
-            withdraw= "bc1qrynf3yt0w524mtca7q0t8hs4ufpd8fj5dg2855",
+            deposit=btc_d_address,
+            withdraw=btc_w_address,
             deposit_key=btc_d_private_key,
             withdraw_key=btc_w_private_key
         )
 
         BNB_address = BNBWallet(
             user_id=user.id,
-            deposit="0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
-            withdraw="0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
+            deposit=bnb_d_address,
+            withdraw=bnb_w_address,
             deposit_key=bnb_d_private_key,
             withdraw_key=bnb_w_private_key
         )
 
         USDT_address = USDTWallet(
             user_id=user.id,
-            deposit="0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
-            withdraw= "0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
+            deposit=tron_d_usdt_address,
+            withdraw=tron_w_usdt_address,
             deposit_key=tron_d_private_key,
             withdraw_key=tron_w_private_key
         )
 
         ETH_address = ETHWallet(
             user_id=user.id,
-            deposit= "0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
-            withdraw="0xe184F8F7112bF1471b9c4452Efb7Bf9E5ddb7df1",
+            deposit=eth_d_address,
+            withdraw=eth_w_address,
             deposit_key=eth_d_private_key,
             withdraw_key=eth_w_private_key
         )
@@ -86,9 +85,8 @@ def register():
  
 @auth_bprt.route("/login", methods=["GET", "POST"])
 def login():
-   
+    session.pop('_flashes', None)
     if request.method == 'POST':
-        session.pop('_flashes', None)
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
@@ -100,10 +98,7 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                if user.role == UserRole.ADMIN:
-                    return redirect(url_for('admin.admin_dashboard'))
-                elif user.role == UserRole.USER:
-                    return redirect(url_for('dash.dashboard'))
+                return redirect(url_for('dash.dashboard'))
         else:
             flash('Invalid credentials.', 'danger')
 
@@ -113,14 +108,8 @@ def login():
 
 
 @auth_bprt.route('/logout')
-@login_required
 def logout():
     session.pop('_flashes', None)
     logout_user()  
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
-
-
- 
-
-

@@ -189,6 +189,35 @@ def support_tickets():
     ).all()
     
     return render_template('user/support_tickets.html', tickets=tickets)
+@user_bprt.route('/support/ticket/<int:ticket_id>', methods=['GET', 'POST'])
+@login_required
+def view_ticket(ticket_id):
+    ticket = SupportTicket.query.filter_by(
+        id=ticket_id,
+        user_id=current_user.id
+    ).first_or_404()
+    
+    if request.method == 'POST':
+        message = request.form['message']
+        
+        new_reply = TicketReply(
+            ticket_id=ticket.id,
+            user_id=current_user.id,
+            message=message,
+            is_admin_reply=False
+        )
+        
+        if ticket.status == TicketStatus.RESOLVED:
+            ticket.status = TicketStatus.OPEN
+        ticket.updated_at = datetime.utcnow()
+        
+        db.session.add(new_reply)
+        db.session.commit()
+        
+        flash('✅ Your reply has been submitted!', 'success')
+        return redirect(url_for('user_bprt.view_ticket', ticket_id=ticket.id))
+    
+    return render_template('user/view_ticket.html', ticket=ticket)
 
 @user_bprt.route('/support/ticket/<int:ticket_id>', methods=['GET', 'POST'])
 @login_required

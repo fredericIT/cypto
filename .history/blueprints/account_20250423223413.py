@@ -11,18 +11,16 @@ from decimal import Decimal
 from sqlalchemy import or_
 account_bprt= Blueprint("account",__name__, url_prefix="/account")
 
-
+session.pop('_flashes', None)
 @account_bprt.route('/deposit')
 @login_required
 def deposit():
-    session.pop('_flashes', None)
     return render_template('user/deposit.html')
 
 @account_bprt.route('/withdraw', methods=['GET', 'POST'])
 @login_required
 @handle_sqlalchemy_error('account.withdraw')
 def withdraw():
-    session.pop('_flashes', None)
     if request.method == 'POST':
         try:
        
@@ -100,7 +98,6 @@ def withdraw():
 @account_bprt.route('/transactions')
 @login_required
 def transactions():
-    session.pop('_flashes', None)
     page = request.args.get('page', 1, type=int)
     per_page = 10  # Transactions per page
     

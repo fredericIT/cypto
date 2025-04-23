@@ -19,7 +19,7 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('user.update_profile') }}" class="form">
+        <form method="POST" action="{{ url_for('auth.update_profile') }}" class="form">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" name="full_name" value="{{ user.full_name }}" required>

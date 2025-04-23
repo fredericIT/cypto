@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket #{{ ticket.id }} - Crypto Platform</title>
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0b0f1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #1a1f2b;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ffff;
+        }
+        .ticket-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-open { background-color: #28a745; }
+        .status-in_progress { background-color: #17a2b8; }
+        .status-resolved { background-color: #6c757d; }
+        .status-closed { background-color: #343a40; }
+        .ticket-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .ticket-message {
+            background-color: #111420;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+        .replies-container {
+            margin-top: 30px;
+        }
+        .reply {
+            background-color: #111420;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 3px solid;
+        }
+        .user-reply { border-left-color: #00c3ff; }
+        .admin-reply { border-left-color: #28a745; }
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .reply-user { color: #00c3ff; }
+        .reply-admin { color: #28a745; }
+        .reply-date {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .reply-message { white-space: pre-wrap; }
+        .reply-form { margin-top: 30px; }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #111420;
+            color: #ffffff;
+            font-size: 16px;
+            min-height: 120px;
+            resize: vertical;
+        }
+        .btn-submit {
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #00c3ff, #0077ff);
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #0077ff, #00c3ff);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #00c3ff;
+            text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('user_bprt.support_tickets') }}" class="back-link">← Back to My Tickets</a>
+        <h2>Ticket #{{ ticket.id }}: {{ ticket.subject }}</h2>
+
+        <div class="ticket-meta">
+            <span>Status: <span class="ticket-status status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ') }}</span></span>
+            <span>Created: {{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            <span>Last updated: {{ ticket.updated_at.strftime('%Y-%m-%d %H:%M') if ticket.updated_at else 'Never' }}</span>
+        </div>
+
+        <div class="ticket-message">
+            {{ ticket.message }}
+        </div>
+
+        {% if ticket.replies %}
+        <div class="replies-container">
+            <h3>Replies ({{ ticket.replies|length }})</h3>
+            {% for reply in ticket.replies %}
+            <div class="reply {% if reply.is_admin_reply %}admin-reply{% else %}user-reply{% endif %}">
+                <div class="reply-header">
+                    <span class="{% if reply.is_admin_reply %}reply-admin{% else %}reply-user{% endif %}">
+                        {% if reply.is_admin_reply %}Support Team{% else %}{{ reply.user.username }}{% endif %}
+                    </span>
+                    <span class="reply-date">{{ reply.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+                <div class="reply-message">
+                    {{ reply.message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="reply-form">
+            <h3>Add Reply</h3>
+            <form method="POST">
+                <textarea name="message" rows="5" required placeholder="Type your reply here..."></textarea>
+                <button type="submit" class="btn-submit">Submit Reply</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

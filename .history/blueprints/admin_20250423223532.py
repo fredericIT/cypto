@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect,url_for,render_template, request, session, flash
-from flask_login import login_user, logout_user, login_required, current_user
 
 users = [
         {
@@ -42,7 +41,6 @@ admin_bprt= Blueprint("admin",__name__, url_prefix="/admin")
 # Admin Dashboard Route
 @admin_bprt.route('/')
 @admin_bprt.route('/dashboard')
-@login_required
 def admin_dashboard():
     session.pop('_flashes', None)
     # Here you can later load stats, users count, etc.
@@ -161,7 +159,6 @@ def update_user_balance(user_id):
     return render_template('admin/update_user_balance.html', user=user)
 @admin_bprt.route('/delete-user/<user_id>', methods=['POST'])
 def delete_user(user_id):
-    session.pop('_flashes', None)
     # Delete user from the database
     delete_user_from_db(user_id)  # Example function, replace with your DB logic
     
@@ -171,7 +168,6 @@ def delete_user(user_id):
 @admin_bprt.route('/review-kyc', methods=['GET'])
 
 def review_kyc():
-    session.pop('_flashes', None)
     # Example static data for users and their KYC status/documents
     
     return render_template('admin/review_kyc.html', users=users)
@@ -180,7 +176,6 @@ def review_kyc():
 
 @admin_bprt.route('/approve-kyc/<int:user_id>', methods=['GET'])
 def approve_kyc(user_id):
-    session.pop('_flashes', None)
     # Simulate approving the user's KYC status (update the KYC status)
     for user in users:
         if user['id'] == user_id:
@@ -191,7 +186,6 @@ def approve_kyc(user_id):
 
 @admin_bprt.route('/reject-kyc/<int:user_id>', methods=['GET'])
 def reject_kyc(user_id):
-    session.pop('_flashes', None)
     # Simulate rejecting the user's KYC status (update the KYC status)
     for user in users:
         if user['id'] == user_id:
@@ -227,12 +221,10 @@ tickets = [
 
 @admin_bprt.route('/support', methods=['GET'])
 def support_page():
-    session.pop('_flashes', None)
     return render_template('admin/support.html', tickets=tickets)
 
 @admin_bprt.route('/admin/close-ticket/<int:ticket_id>', methods=['GET'])
 def close_ticket(ticket_id):
-    session.pop('_flashes', None)
     for ticket in tickets:
         if ticket['id'] == ticket_id:
             ticket['status'] = 'closed'
@@ -243,7 +235,6 @@ def close_ticket(ticket_id):
 
 @admin_bprt.route('/manage-transactions', methods=['GET'])
 def manage_transactions():
-    session.pop('_flashes', None)
     transactions = [
         {
             'transaction_id': 'TXN123456',

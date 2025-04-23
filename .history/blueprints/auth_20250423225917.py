@@ -100,9 +100,9 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                if user.role == UserRole.ADMIN:
+                if user.role == UserRole.ADMIN.value:
                     return redirect(url_for('admin.admin_dashboard'))
-                elif user.role == UserRole.USER:
+                elif user.role == UserRole.USER.value:
                     return redirect(url_for('dash.dashboard'))
         else:
             flash('Invalid credentials.', 'danger')
@@ -119,8 +119,3 @@ def logout():
     logout_user()  
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
-
-
- 
-
-

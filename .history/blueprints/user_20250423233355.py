@@ -174,7 +174,7 @@ def support():
         db.session.commit()
         
         flash('✅ Your support ticket has been submitted successfully!', 'success')
-        return redirect(url_for('user.support_tickets'))
+        return redirect(url_for('user_bprt.support_tickets'))
     
     return render_template('user/support.html')
 

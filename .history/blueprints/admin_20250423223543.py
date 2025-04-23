@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect,url_for,render_template, request, session, flash
-from flask_login import login_user, logout_user, login_required, current_user
 
 users = [
         {
@@ -42,7 +41,6 @@ admin_bprt= Blueprint("admin",__name__, url_prefix="/admin")
 # Admin Dashboard Route
 @admin_bprt.route('/')
 @admin_bprt.route('/dashboard')
-@login_required
 def admin_dashboard():
     session.pop('_flashes', None)
     # Here you can later load stats, users count, etc.
@@ -191,7 +189,6 @@ def approve_kyc(user_id):
 
 @admin_bprt.route('/reject-kyc/<int:user_id>', methods=['GET'])
 def reject_kyc(user_id):
-    session.pop('_flashes', None)
     # Simulate rejecting the user's KYC status (update the KYC status)
     for user in users:
         if user['id'] == user_id:
@@ -227,12 +224,10 @@ tickets = [
 
 @admin_bprt.route('/support', methods=['GET'])
 def support_page():
-    session.pop('_flashes', None)
     return render_template('admin/support.html', tickets=tickets)
 
 @admin_bprt.route('/admin/close-ticket/<int:ticket_id>', methods=['GET'])
 def close_ticket(ticket_id):
-    session.pop('_flashes', None)
     for ticket in tickets:
         if ticket['id'] == ticket_id:
             ticket['status'] = 'closed'
@@ -243,7 +238,6 @@ def close_ticket(ticket_id):
 
 @admin_bprt.route('/manage-transactions', methods=['GET'])
 def manage_transactions():
-    session.pop('_flashes', None)
     transactions = [
         {
             'transaction_id': 'TXN123456',

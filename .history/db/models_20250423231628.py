@@ -24,7 +24,6 @@ class User(UserMixin, db.Model):
     eth_wallet = db.relationship('ETHWallet', back_populates='user', cascade='all, delete-orphan',uselist=False)
     usdt_wallet = db.relationship('USDTWallet', back_populates='user', cascade='all, delete-orphan',uselist=False)
     bnb_wallet= db.relationship('BNBWallet', back_populates='user', cascade='all, delete-orphan',uselist=False)
-    notifications= db.relationship('Notification', back_populates='user', uselist=False, cascade='all, delete-orphan')
 
     def __repr__(self):
         return f"<User {self.email} | Role: {self.role}>"
@@ -149,73 +148,3 @@ class Transaction(db.Model):
    
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_transactions')
     receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_transactions')
-
- 
-
-# models.py
-class Notification(db.Model):
-    __tablename__ = 'notifications'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    title = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    notification_type = db.Column(db.String(20), default='info')  # info, success, warning, danger
-    is_read = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    link = db.Column(db.String(255))  # Optional link for action
-    
-    # Changed backref name to avoid conflict
-    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, order_by='Notification.created_at.desc()'))
-    
-    def __repr__(self):
-        return f'<Notification {self.id} - {self.title}>'
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'message': self.message,
-            'type': self.notification_type,
-            'is_read': self.is_read,
-            'date': self.created_at.strftime('%Y-%m-%d'),
-            'time': self.created_at.strftime('%H:%M'),
-            'link': self.link
-        }
-
-
-
-class SupportTicket(db.Model):
-    __tablename__ = 'support_tickets'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    subject = db.Column(db.String(200), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.OPEN)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
-    admin_notes = db.Column(db.Text)
-    
-    # Relationships
-    user = db.relationship('User', backref=db.backref('support_tickets', lazy=True))
-    replies = db.relationship('TicketReply', backref='ticket', lazy=True, order_by='TicketReply.created_at')
-    
-    def __repr__(self):
-        return f'<SupportTicket {self.id} - {self.subject}>'
-
-class TicketReply(db.Model):
-    __tablename__ = 'ticket_replies'
-    
-    id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    is_admin_reply = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relationships
-    user = db.relationship('User')
-    
-    def __repr__(self):
-        return f'<TicketReply {self.id} - {self.message[:50]}>'

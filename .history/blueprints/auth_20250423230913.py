@@ -123,4 +123,29 @@ def logout():
 
  
 
+@auth_bprt.route('/update_profile', methods=['POST'])
+@login_required
+def update_profile():
+    full_name = request.form.get('full_name')
+    password = request.form.get('password')
+    withdraw_password = request.form.get('withdraw_password')
 
+    # Update full name
+    current_user.full_name = full_name
+
+    # Update password if provided
+    if password:
+        current_user.password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    # Update withdraw password if provided
+    if withdraw_password:
+        current_user.withdraw_password =  withdraw_password
+
+    try:
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while updating your profile.', 'danger')
+
+    return redirect(url_for('profile.view_profile'))   

@@ -6,7 +6,7 @@ from flask import render_template, request, flash, redirect, url_for, current_ap
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
-from db.models import db, KYC, Notification, SupportTicket, TicketReply, TicketStatus
+from db.models import db, KYC, Notification
 from flask_login import login_required, current_user
 
  
@@ -108,14 +108,17 @@ def kyc():
     
     return render_template('user/kyc.html', kyc=existing_kyc)
 
-# views.py
 @user_bprt.route('/notifications')
 @login_required
 def notifications():
     session.pop('_flashes', None)
     
-    # Updated to use user_notifications instead of notifications
-    user_notifications = current_user.user_notifications
+    # Get all notifications for the current user
+    user_notifications = Notification.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Notification.created_at.desc()
+    ).all()
     
     # Mark all as read when user visits the page
     unread_notifications = [n for n in user_notifications if not n.is_read]
@@ -154,73 +157,18 @@ def mark_notification_read(notification_id):
     
     return jsonify({'success': True})
 @user_bprt.route('/support', methods=['GET', 'POST'])
-@login_required
 def support():
     session.pop('_flashes', None)
-    
     if request.method == 'POST':
         subject = request.form['subject']
         message = request.form['message']
-        
-        # Create new support ticket
-        new_ticket = SupportTicket(
-            user_id=current_user.id,
-            subject=subject,
-            message=message,
-            status=TicketStatus.OPEN
-        )
-        
-        db.session.add(new_ticket)
-        db.session.commit()
-        
-        flash('✅ Your support ticket has been submitted successfully!', 'success')
-        return redirect(url_for('user.support_tickets'))
-    
+
+        # You can save the ticket to database or email it to admin
+
+        flash('✅ Your support request has been submitted!', 'success')
+        return redirect(url_for('support'))
+
     return render_template('user/support.html')
-
-@user_bprt.route('/support/tickets')
-@login_required
-def support_tickets():
-    # Get all tickets for the current user
-    tickets = SupportTicket.query.filter_by(
-        user_id=current_user.id
-    ).order_by(
-        SupportTicket.created_at.desc()
-    ).all()
-    
-    return render_template('user/support_tickets.html', tickets=tickets)
-
-@user_bprt.route('/support/ticket/<int:ticket_id>', methods=['GET', 'POST'])
-@login_required
-def view_ticket(ticket_id):
-    ticket = SupportTicket.query.filter_by(
-        id=ticket_id,
-        user_id=current_user.id
-    ).first_or_404()
-    
-    if request.method == 'POST':
-        message = request.form['message']
-        
-        # Add reply to ticket
-        new_reply = TicketReply(
-            ticket_id=ticket.id,
-            user_id=current_user.id,
-            message=message,
-            is_admin_reply=False
-        )
-        
-        # Update ticket status and timestamp
-        if ticket.status == TicketStatus.RESOLVED:
-            ticket.status = TicketStatus.OPEN
-        ticket.updated_at = datetime.utcnow()
-        
-        db.session.add(new_reply)
-        db.session.commit()
-        
-        flash('✅ Your reply has been submitted!', 'success')
-        return redirect(url_for('user.view_ticket', ticket_id=ticket.id))
-    
-    return render_template('user/view_ticket.html', ticket=ticket)
 
 @user_bprt.route('/update_profile', methods=['POST'])
 @login_required

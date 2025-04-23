@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Support Tickets - Crypto Platform</title>
+    <style>
+        /* Add the same styles as support.html plus these: */
+        .tickets-list {
+            margin-top: 20px;
+        }
+
+        .ticket-card {
+            background-color: #111420;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ticket-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00c3ff;
+            margin: 0;
+        }
+
+        .ticket-date {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .ticket-excerpt {
+            color: #adb5bd;
+            margin-bottom: 10px;
+        }
+
+        .view-ticket-btn {
+            background-color: transparent;
+            border: 1px solid #00c3ff;
+            color: #00c3ff;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-ticket-btn:hover {
+            background-color: rgba(0, 195, 255, 0.1);
+        }
+
+        .no-tickets {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{{ url_for('user_bprt.support') }}" class="back-link">← Back to Support</a>
+        <h2>📨 My Support Tickets</h2>
+
+        {% if tickets %}
+            <div class="tickets-list">
+                {% for ticket in tickets %}
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <h3 class="ticket-title">{{ ticket.subject }}</h3>
+                        <span class="ticket-status status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ') }}</span>
+                    </div>
+                    <p class="ticket-excerpt">{{ ticket.message[:150] }}{% if ticket.message|length > 150 %}...{% endif %}</p>
+                    <div class="ticket-footer">
+                        <span class="ticket-date">Created: {{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                        <a href="{{ url_for('user_bprt.view_ticket', ticket_id=ticket.id) }}" class="view-ticket-btn">View Ticket</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-tickets">
+                <p>You haven't submitted any support tickets yet.</p>
+                <a href="{{ url_for('user_bprt.support') }}" class="btn-submit">Create New Ticket</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

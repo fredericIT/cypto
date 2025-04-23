@@ -8,7 +8,7 @@ dash_bprt= Blueprint("dash",__name__, url_prefix="/dash")
 @dash_bprt.route("/", methods=["GET", "POST"])
 @login_required
 def dashboard():
-    session.pop('_flashes', None)
+   session.pop('_flashes', None)
     user_info = {
             'full_name': current_user.full_name,
             'email': current_user.email,

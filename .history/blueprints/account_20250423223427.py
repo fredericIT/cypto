@@ -22,7 +22,6 @@ def deposit():
 @login_required
 @handle_sqlalchemy_error('account.withdraw')
 def withdraw():
-    session.pop('_flashes', None)
     if request.method == 'POST':
         try:
        
@@ -100,7 +99,6 @@ def withdraw():
 @account_bprt.route('/transactions')
 @login_required
 def transactions():
-    session.pop('_flashes', None)
     page = request.args.get('page', 1, type=int)
     per_page = 10  # Transactions per page
     

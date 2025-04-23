@@ -86,9 +86,8 @@ def register():
  
 @auth_bprt.route("/login", methods=["GET", "POST"])
 def login():
-   
+    session.pop('_flashes', None)
     if request.method == 'POST':
-        session.pop('_flashes', None)
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
@@ -100,10 +99,7 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                if user.role == UserRole.ADMIN:
-                    return redirect(url_for('admin.admin_dashboard'))
-                elif user.role == UserRole.USER:
-                    return redirect(url_for('dash.dashboard'))
+                return redirect(url_for('dash.dashboard'))
         else:
             flash('Invalid credentials.', 'danger')
 
@@ -113,14 +109,8 @@ def login():
 
 
 @auth_bprt.route('/logout')
-@login_required
 def logout():
     session.pop('_flashes', None)
     logout_user()  
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
-
-
- 
-
-

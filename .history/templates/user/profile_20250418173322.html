@@ -9,25 +9,15 @@
     <div class="container">
         <h2>User Profile</h2>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                    {% for category, message in messages %}
-                        <li class="flash-{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST" action="{{ url_for('user.update_profile') }}" class="form">
+        <form method="POST" action="/update_profile" class="form">
             <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+                <input type="text" name="full_name" value="John Doe" required>
             </div>
 
             <div class="form-group">
                 <label>Email Address (not editable)</label>
-                <input type="email" name="email" value="{{ user.email }}" readonly>
+                <input type="email" name="email" value="user@example.com" readonly>
             </div>
 
             <div class="form-group">

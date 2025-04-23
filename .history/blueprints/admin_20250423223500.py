@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect,url_for,render_template, request, session, flash
-from flask_login import login_user, logout_user, login_required, current_user
 
 users = [
         {
@@ -42,7 +41,6 @@ admin_bprt= Blueprint("admin",__name__, url_prefix="/admin")
 # Admin Dashboard Route
 @admin_bprt.route('/')
 @admin_bprt.route('/dashboard')
-@login_required
 def admin_dashboard():
     session.pop('_flashes', None)
     # Here you can later load stats, users count, etc.
@@ -73,7 +71,6 @@ def admin_set_wallets():
 
 @admin_bprt.route('/update_balance', methods=['GET', 'POST'])
 def update_balance():
-    session.pop('_flashes', None)
     if 'user' not in session or 'admin' not in session['user']:
         return redirect(url_for('auth.login'))
 
@@ -92,7 +89,6 @@ def update_balance():
 
 
 def get_all_users():
-    session.pop('_flashes', None)
     # Replace with actual database query to fetch all users
     return [
         {'id': 1, 'full_name': 'John Doe', 'email': 'john.doe@example.com', 'role': 'user'},
@@ -100,7 +96,6 @@ def get_all_users():
     ]
 
 def get_user_by_id(user_id):
-    session.pop('_flashes', None)
     # Replace this with an actual database query to get the user by their ID
     # Example data structure for user (Replace with real data fetching)
     return {
@@ -119,26 +114,22 @@ def get_user_by_id(user_id):
 
 
 def update_user_balance_in_db(user_id, coin, new_balance):
-    session.pop('_flashes', None)
     # Replace with actual database logic to update the user's balance
     pass
 
 def delete_user_from_db(user_id):
-    session.pop('_flashes', None)
     # Replace with actual database logic to delete a user
     pass
 
 
 @admin_bprt.route('/manage-users')
 def manage_users():
-    session.pop('_flashes', None)
     # Fetch users from database (you will need to implement this)
     users = get_all_users()  # Example function, replace with your DB query logic.
     
     return render_template('admin/manage_users.html', users=users)
 @admin_bprt.route('/view-user/<user_id>')
 def view_user(user_id):
-    session.pop('_flashes', None)
     # Fetch user details based on user_id
     user = get_user_by_id(user_id)  # Example function, replace with your DB query logic.
     
@@ -146,7 +137,6 @@ def view_user(user_id):
 
 @admin_bprt.route('/update-user-balance/<user_id>', methods=['POST'])
 def update_user_balance(user_id):
-    session.pop('_flashes', None)
     if request.method == 'POST':
         coin = request.form['coin']
         new_balance = request.form['new_balance']
@@ -161,7 +151,6 @@ def update_user_balance(user_id):
     return render_template('admin/update_user_balance.html', user=user)
 @admin_bprt.route('/delete-user/<user_id>', methods=['POST'])
 def delete_user(user_id):
-    session.pop('_flashes', None)
     # Delete user from the database
     delete_user_from_db(user_id)  # Example function, replace with your DB logic
     
@@ -171,7 +160,6 @@ def delete_user(user_id):
 @admin_bprt.route('/review-kyc', methods=['GET'])
 
 def review_kyc():
-    session.pop('_flashes', None)
     # Example static data for users and their KYC status/documents
     
     return render_template('admin/review_kyc.html', users=users)
@@ -180,7 +168,6 @@ def review_kyc():
 
 @admin_bprt.route('/approve-kyc/<int:user_id>', methods=['GET'])
 def approve_kyc(user_id):
-    session.pop('_flashes', None)
     # Simulate approving the user's KYC status (update the KYC status)
     for user in users:
         if user['id'] == user_id:
@@ -191,7 +178,6 @@ def approve_kyc(user_id):
 
 @admin_bprt.route('/reject-kyc/<int:user_id>', methods=['GET'])
 def reject_kyc(user_id):
-    session.pop('_flashes', None)
     # Simulate rejecting the user's KYC status (update the KYC status)
     for user in users:
         if user['id'] == user_id:
@@ -227,12 +213,10 @@ tickets = [
 
 @admin_bprt.route('/support', methods=['GET'])
 def support_page():
-    session.pop('_flashes', None)
     return render_template('admin/support.html', tickets=tickets)
 
 @admin_bprt.route('/admin/close-ticket/<int:ticket_id>', methods=['GET'])
 def close_ticket(ticket_id):
-    session.pop('_flashes', None)
     for ticket in tickets:
         if ticket['id'] == ticket_id:
             ticket['status'] = 'closed'
@@ -243,7 +227,6 @@ def close_ticket(ticket_id):
 
 @admin_bprt.route('/manage-transactions', methods=['GET'])
 def manage_transactions():
-    session.pop('_flashes', None)
     transactions = [
         {
             'transaction_id': 'TXN123456',

@@ -1,5 +1,4 @@
 from flask import Blueprint, redirect,url_for,render_template, request, session, flash
-from flask_login import login_user, logout_user, login_required, current_user
 
 users = [
         {
@@ -42,7 +41,6 @@ admin_bprt= Blueprint("admin",__name__, url_prefix="/admin")
 # Admin Dashboard Route
 @admin_bprt.route('/')
 @admin_bprt.route('/dashboard')
-@login_required
 def admin_dashboard():
     session.pop('_flashes', None)
     # Here you can later load stats, users count, etc.

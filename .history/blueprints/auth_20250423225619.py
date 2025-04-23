@@ -100,10 +100,10 @@ def login():
             if next_page:
                 return redirect(next_page)
             else:
-                if user.role == UserRole.ADMIN:
+                if user.role == UserRole.ADMIN.value:
                     return redirect(url_for('admin.admin_dashboard'))
-                elif user.role == UserRole.USER:
-                    return redirect(url_for('dash.dashboard'))
+                elif user.role == UserRole.USER.value:
+                    return redirect(url_for('user.user_dashboard'))
         else:
             flash('Invalid credentials.', 'danger')
 
@@ -113,14 +113,8 @@ def login():
 
 
 @auth_bprt.route('/logout')
-@login_required
 def logout():
     session.pop('_flashes', None)
     logout_user()  
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
-
-
- 
-
-
