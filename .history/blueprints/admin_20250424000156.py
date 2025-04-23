@@ -108,7 +108,7 @@ def view_user(user_id):
                          account=account,
                          kyc=kyc)
 
-@admin_bprt.route('/update-user-balance/<int:user_id>', methods=['POST', 'GET'])
+@admin_bprt.route('/update-user-balance/<int:user_id>', methods=['POST'])
 @login_required
 def update_user_balance(user_id):
     session.pop('_flashes', None)
@@ -135,7 +135,7 @@ def update_user_balance(user_id):
         flash('Balance updated successfully!', 'success')
         return redirect(url_for('admin.view_user', user_id=user_id))
 
-@admin_bprt.route('/delete-user/<int:user_id>', methods=['POST', 'GET'])
+@admin_bprt.route('/delete-user/<int:user_id>', methods=['POST'])
 @login_required
 def delete_user(user_id):
     session.pop('_flashes', None)
@@ -208,7 +208,7 @@ def reject_kyc(kyc_id):
     
     return render_template('admin/reject_kyc.html', kyc=kyc)
 
-@admin_bprt.route('/support',methods=['POST', 'GET'])
+@admin_bprt.route('/support')
 @login_required
 def support_page():
     session.pop('_flashes', None)
@@ -262,7 +262,7 @@ def view_ticket(ticket_id):
     
     return render_template('admin/view_ticket.html', ticket=ticket)
 
-@admin_bprt.route('/close-ticket/<int:ticket_id>',  methods=['POST', 'GET'])
+@admin_bprt.route('/close-ticket/<int:ticket_id>')
 @login_required
 def close_ticket(ticket_id):
     session.pop('_flashes', None)
@@ -285,7 +285,7 @@ def close_ticket(ticket_id):
     flash('Ticket closed!', 'success')
     return redirect(url_for('admin.support_page'))
 
-@admin_bprt.route('/manage-transactions',methods=['POST', 'GET'])
+@admin_bprt.route('/manage-transactions')
 @login_required
 def manage_transactions():
     session.pop('_flashes', None)
@@ -296,7 +296,7 @@ def manage_transactions():
     return render_template('admin/manage_transactions.html', 
                          transactions=transactions)
 
-@admin_bprt.route('/transaction/<int:txn_id>/approve', methods=['POST', 'GET'])
+@admin_bprt.route('/transaction/<int:txn_id>/approve')
 @login_required
 def approve_transaction(txn_id):
     session.pop('_flashes', None)
@@ -352,7 +352,7 @@ def reject_transaction(txn_id):
     return render_template('admin/reject_transaction.html', transaction=transaction)
 
 
-@admin_bprt.route('/support/ticket/<int:ticket_id>/reopen', methods=['POST', 'GET'])
+@admin_bprt.route('/support/ticket/<int:ticket_id>/reopen', methods=['POST'])
 @login_required
 def reopen_ticket(ticket_id):
     ticket = SupportTicket.query.get_or_404(ticket_id)

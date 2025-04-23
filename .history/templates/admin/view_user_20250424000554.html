@@ -261,7 +261,16 @@
                         <strong>Document Type:</strong>
                         <span>{{ user.kyc.document_type if user.kyc else 'N/A' }}</span>
                     </p>
-                  
+                    <p>
+                        <strong>Last Updated:</strong>
+                        <span>
+                            {% if user.kyc %}
+                                {{ user.kyc.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </span>
+                    </p>
                 </div>
             </div>
 
@@ -291,7 +300,7 @@
                 <a href="{{ url_for('admin.manage_users') }}" class="btn btn-back">
                     <i class="fas fa-arrow-left"></i> Back to Users
                 </a>
-                <a href="{{ url_for('admin.update_balance', user_id=user.id) }}" class="btn btn-update">
+                <a href="{{ url_for('admin.update_user_balance', user_id=user.id) }}" class="btn btn-update">
                     <i class="fas fa-pencil-alt"></i> Update Balances
                 </a>
                 {% if user.kyc %}

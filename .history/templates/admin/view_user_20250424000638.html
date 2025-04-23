@@ -291,7 +291,7 @@
                 <a href="{{ url_for('admin.manage_users') }}" class="btn btn-back">
                     <i class="fas fa-arrow-left"></i> Back to Users
                 </a>
-                <a href="{{ url_for('admin.update_balance', user_id=user.id) }}" class="btn btn-update">
+                <a href="{{ url_for('admin.update_user_balance', user_id=user.id) }}" class="btn btn-update">
                     <i class="fas fa-pencil-alt"></i> Update Balances
                 </a>
                 {% if user.kyc %}

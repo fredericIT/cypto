@@ -201,7 +201,7 @@
                            placeholder="Enter amount">
                 </div>
 
-                
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
                 <button type="submit" class="btn">
                     <i class="fas fa-save"></i> Update Balance
