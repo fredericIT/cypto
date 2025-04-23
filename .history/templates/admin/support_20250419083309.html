@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Support Tickets</title>
+    <style>
+        /* Admin Support Page Style */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0b0f1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: #1a1f2b;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #00ffff;
+        }
+
+        .ticket {
+            background-color: #111420;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+
+        .ticket h4 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+        }
+
+        .ticket p {
+            margin: 5px 0;
+        }
+
+        .btn-close {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #ff3c3c, #ff0000);
+            border: none;
+            color: white;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-close:hover {
+            background: linear-gradient(135deg, #ff0000, #ff3c3c);
+        }
+
+        .status-open {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .status-closed {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📨 User Support Tickets</h2>
+
+        {% if tickets %}
+            {% for ticket in tickets %}
+                <div class="ticket">
+                    <h4>Ticket #{{ ticket.id }}</h4>
+                    <p><strong>User Email:</strong> {{ ticket.user_email }}</p>
+                    <p><strong>Subject:</strong> {{ ticket.subject }}</p>
+                    <p><strong>Message:</strong> {{ ticket.message }}</p>
+                    <p><strong>Status:</strong> 
+                        {% if ticket.status == 'open' %}
+                            <span class="status-open">Open</span>
+                        {% else %}
+                            <span class="status-closed">Closed</span>
+                        {% endif %}
+                    </p>
+
+                    {% if ticket.status == 'open' %}
+                        <a href="{{ url_for('admin.close_ticket', ticket_id=ticket.id) }}" class="btn-close">Close Ticket</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No support tickets available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+body.bg-dark {
+    background-color: #0f0f0f;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00f7ff;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #00f7ff;
+}
+
+.register-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #2b2b2b;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+}
+
+.register-form button {
+    width: 100%;
+    padding: 12px;
+    background: #00f7ff;
+    color: #0f0f0f;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.register-form button:hover {
+    background: #00d1d1;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #00f7ff;
+    text-decoration: none;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #00f7ff;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #2b2b2b;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background: #00f7ff;
+    color: #0f0f0f;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background: #00d1d1;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link a {
+    color: #00f7ff;
+    text-decoration: none;
+}
+  /* Flash message styles */
+  .flash-messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alert-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.alert-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Optional close button */
+.alert .close-btn {
+    float: right;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 10px;
+}

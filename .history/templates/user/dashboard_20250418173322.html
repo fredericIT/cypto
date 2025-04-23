@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Platform - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <style>
+        /* Add dropdown menu styles */
+        .menu-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .menu-btn {
+            background-color: #00f7ff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .menu-links {
+            display: none;
+            margin-top: 10px;
+            background-color: #2a2a2a;
+            border: 1px solid #00f7ff;
+            border-radius: 5px;
+            padding: 10px;
+            position: absolute;
+            right: 0;
+            z-index: 100;
+        }
+        .menu-links a {
+            display: block;
+            padding: 5px 0;
+            color: white;
+            text-decoration: none;
+        }
+        .menu-links a:hover {
+            color: #00f7ff;
+        }
+    </style>
+</head>
+<body class="bg-dark text-light">
+
+        <div class="menu-container">
+            <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+            <div class="menu-links" id="menu-links">
+                <a href="{{ url_for('transactions') }}">📜 Transaction History</a>
+                <a href="{{ url_for('notifications') }}">🔔 Notifications</a>
+                <a href="{{ url_for('support') }}">🛟 Support</a>
+                <a href="{{ url_for('profile') }}">👤 Profile</a>
+                <a href="{{ url_for('kyc') }}">🛡️ KYC Verification</a>
+                <a href="{{ url_for('logout') }}">🚪 Logout</a>
+            </div>
+        </div>
+    <div class="dashboard-container">
+        
+        <div class="dashboard-header">
+            <h2>🚀 Welcome, {{ user.full_name }}</h2>
+            <p class="subtitle">{{ user.email }}</p>
+        </div>
+
+        <div class="balances-section">
+            <h3>💰 Your Balances</h3>
+            <div class="balances-grid">
+                {% for coin, amount in user.balances.items() %}
+                <div class="balance-card">
+                    <h4>{{ coin }}</h4>
+                    <p>{{ amount }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="deposit-grid">
+            {% for coin, address in user.deposit_addresses.items() %}
+            <div class="deposit-card">
+                <h4>{{ coin }}</h4>
+                <p class="wallet-address" id="address-{{ loop.index }}" data-full="{{ address }}">
+                    {{ address[:6] }}...{{ address[-3:] }}
+                </p>
+                <button class="copy-btn" onclick="copyAddress('address-{{ loop.index }}')">Copy</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="dashboard-buttons">
+            <a href="{{ url_for('trade') }}" class="btn">🚀 Start Trading</a>
+            <a href="{{ url_for('deposit') }}" class="btn">💰 Deposit</a>
+            <a href="{{ url_for('withdraw') }}" class="btn">💸 Withdraw</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-logout">🚪 Logout</a>
+        </div>
+        
+    </div>
+
+    <script>
+        function copyAddress(elementId) {
+            var addressElement = document.getElementById(elementId);
+            var fullAddress = addressElement.getAttribute('data-full');
+            navigator.clipboard.writeText(fullAddress).then(function() {
+                alert('Full address copied to clipboard!');
+            }, function(err) {
+                alert('Failed to copy!');
+            });
+        }
+        function toggleMenu() {
+            var menu = document.getElementById('menu-links');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

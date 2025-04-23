@@ -1,0 +1,20 @@
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class KYC(Base):
+    __tablename__ = 'kyc'
+
+    id = Column(Integer, primary_key=True)
+    full_name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
+    kyc_status = Column(String(50), nullable=False)
+    kyc_document = Column(String(255), nullable=True)
+    document_type = Column(String(100), nullable=False)
+    front_image = Column(String(255), nullable=True)
+    back_image = Column(String(255), nullable=True)
+    user_with_document_image = Column(String(255), nullable=True)
+
+    def __repr__(self):
+        return f"<KYC(id={self.id}, full_name='{self.full_name}', email='{self.email}', kyc_status='{self.kyc_status}')>"

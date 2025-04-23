@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body class="bg-dark text-light">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>🛡️ Admin Dashboard</h2>
+            <p>Manage your crypto platform here.</p>
+        </div>
+
+        <div class="admin-actions">
+            <a href="{{ url_for('admin.admin_set_wallets') }}" class="btn">🔗 Set Wallet Addresses</a>
+            <a href="{{ url_for('admin.update_balance') }}" class="btn">💰 Update User Balances</a>
+            <a href="{{ url_for('admin.manage_users') }}" class="btn">👥 Manage Users</a>
+            <a href="{{ url_for('admin.review_kyc') }}" class="btn">📄 Review KYC</a>
+            <a href="{{ url_for('admin.manage_transactions') }}" class="btn">Manage Transactions</a>
+            <a href="{{ url_for('admin.support_page') }}" class="btn">Support</a>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-logout">🚪 Logout</a>
+        </div>
+    </div>
+</body>
+</html>

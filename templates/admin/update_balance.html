@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Update User Balance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/forms.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <h2>🛠️ Update User Balance</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="email">User Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="coin">Select Coin:</label>
+                    <select id="coin" name="coin" required>
+                        <option value="">-- Select Coin --</option>
+                        <option value="BTC">BTC</option>
+                        <option value="ETH">ETH</option>
+                        <option value="USDT">USDT</option>
+                        <option value="BNB">BNB</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="new_balance">New Balance:</label>
+                    <input type="number" step="any" id="new_balance" name="new_balance" required>
+                </div>
+
+                <button type="submit" class="btn">💾 Update Balance</button>
+            </div>
+        </form>
+
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-logout">🏠 Back to Dashboard</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - Crypto Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/profile_kyc.css') }}">
+    <style>
+        .transaction-history {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .transaction-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn.active {
+            background: #3a7bd5;
+            color: white;
+            border-color: #3a7bd5;
+        }
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .transaction-table th {
+            text-align: left;
+            padding: 15px;
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .transaction-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+        .transaction-table tr:last-child td {
+            border-bottom: none;
+        }
+        .transaction-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .tx-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .tx-amount {
+            font-weight: 600;
+        }
+        .tx-amount.incoming {
+            color: #28a745;
+        }
+        .tx-amount.outgoing {
+            color: #dc3545;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-completed {
+            background: #e6f7ee;
+            color: #28a745;
+        }
+        .status-pending {
+            background: #fff8e6;
+            color: #ffc107;
+        }
+        .status-failed {
+            background: #feeae9;
+            color: #dc3545;
+        }
+        .tx-hash {
+            color: #3a7bd5;
+            text-decoration: none;
+            font-family: monospace;
+        }
+        .tx-hash:hover {
+            text-decoration: underline;
+        }
+        .no-transactions {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 15px;
+            border: 1px solid #dee2e6;
+            color: #3a7bd5;
+            text-decoration: none;
+        }
+        .pagination .active {
+            background: #3a7bd5;
+            color: white;
+            border-color: #3a7bd5;
+        }
+        .coin-icon {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="transaction-history">
+        <div class="transaction-header">
+            <h2><i class="fas fa-exchange-alt"></i> Transaction History</h2>
+            <div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="transaction-filters">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Deposits</button>
+            <button class="filter-btn">Withdrawals</button>
+            <select class="filter-btn">
+                <option>All Coins</option>
+                <option>BTC</option>
+                <option>ETH</option>
+                <option>USDT</option>
+                <option>BNB</option>
+            </select>
+        </div>
+
+        {% if transactions %}
+        <div class="table-responsive">
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Coin</th>
+                        <th>Amount</th>
+                        <th>Counterparty</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>TX Hash</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>
+                            <div class="tx-type">
+                                {% if tx.is_incoming %}
+                                    <i class="fas fa-arrow-down" style="color: #28a745;"></i> Deposit
+                                {% else %}
+                                    <i class="fas fa-arrow-up" style="color: #dc3545;"></i> Withdrawal
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <img src="{{ url_for('static', filename='images/coins/' + tx.coin|lower + '.png') }}" 
+                                     alt="{{ tx.coin }}" class="coin-icon">
+                                {{ tx.coin }}
+                            </div>
+                        </td>
+                        <td class="tx-amount {% if tx.is_incoming %}incoming{% else %}outgoing{% endif %}">
+                            {% if tx.is_incoming %}+{% else %}-{% endif %}{{ tx.amount }}
+                        </td>
+                        <td>{{ tx.counterparty }}</td>
+                        <td>
+                            <span class="status-badge status-{{ tx.status|lower }}">
+                                {{ tx.status }}
+                            </span>
+                        </td>
+                        <td>{{ tx.date }}</td>
+                        <td>
+                            {% if tx.tx_hash %}
+                            <a href="#" class="tx-hash" title="View on blockchain explorer">
+                                {{ tx.tx_hash|truncate(10, True, '...') }}
+                            </a>
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination %}
+        <div class="pagination">
+            {% if pagination.has_prev %}
+                <a href="{{ url_for('account.transactions', page=pagination.prev_num) }}">&laquo; Previous</a>
+            {% endif %}
+            
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if pagination.page == page_num %}
+                        <span class="active">{{ page_num }}</span>
+                    {% else %}
+                        <a href="{{ url_for('account.transactions', page=page_num) }}">{{ page_num }}</a>
+                    {% endif %}
+                {% else %}
+                    <span>...</span>
+                {% endif %}
+            {% endfor %}
+            
+            {% if pagination.has_next %}
+                <a href="{{ url_for('account.transactions', page=pagination.next_num) }}">Next &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="no-transactions">
+            <i class="fas fa-exchange-alt" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <h3>No transactions yet</h3>
+            <p>Your transaction history will appear here once you make your first deposit or withdrawal.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Simple filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Here you would typically reload the page with filter parameters
+                // or filter the table client-side
+            });
+        });
+        
+        // Tooltip for transaction hashes
+        document.querySelectorAll('.tx-hash').forEach(el => {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                // In a real implementation, this would open the blockchain explorer
+                alert('Would open blockchain explorer for: ' + this.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

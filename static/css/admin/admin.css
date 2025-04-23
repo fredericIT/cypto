@@ -1,0 +1,66 @@
+/* admin/static/css/admin.css */
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: #0b0f1a;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-container {
+    max-width: 700px;
+    margin: 60px auto;
+    background-color: #1a1f2b;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+    text-align: center;
+}
+
+.admin-header h2 {
+    margin-bottom: 10px;
+    color: #ff00ff;
+}
+
+.admin-header p {
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: #cccccc;
+}
+
+.admin-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-actions .btn {
+    padding: 15px;
+    background: linear-gradient(135deg, #ff00ff, #8000ff);
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.admin-actions .btn:hover {
+    background: linear-gradient(135deg, #8000ff, #ff00ff);
+}
+
+.btn-logout {
+    background: linear-gradient(135deg, #ff4d4d, #cc0000);
+}
+
+.btn-logout:hover {
+    background: linear-gradient(135deg, #cc0000, #ff4d4d);
+}
+
+.flash.success {
+    background-color: #00c853;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 20px auto;
+    width: fit-content;
+}

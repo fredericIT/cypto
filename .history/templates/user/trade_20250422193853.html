@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade - Crypto Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+</head>
+<body class="bg-dark text-light">
+    <div class="trade-container">
+        <h2>🔥 Start Trading</h2>
+        
+        <form id="trade-form">
+            <div class="form-group">
+                <label for="coin">Choose Coin:</label>
+                <select id="coin" name="coin" class="form-control">
+                    <option value="BTC">BTC</option>
+                    <option value="ETH">ETH</option>
+                    <option value="USDT">USDT</option>
+                    <option value="BNB">BNB</option>
+                </select>
+            </div>
+        
+            <div class="form-group">
+                <label for="amount">Amount to Trade:</label>
+                <input type="number" id="amount" name="amount" class="form-control" placeholder="Enter amount" required>
+            </div>
+        
+            <div class="form-group">
+                <label for="direction">Select Prediction:</label>
+                <select id="direction" name="direction" class="form-control">
+                    <option value="up">Up</option>
+                    <option value="down">Down</option>
+                </select>
+            </div>
+        
+            <button type="button" class="btn" id="start-trading">Start Trading</button>
+        </form>
+        
+
+        <div id="timer" class="timer"></div>
+        
+        <div id="trade-result" class="trade-result" style="display:none;">
+            <h4>Trade Complete!</h4>
+            <p>Your profit: <span id="profit-amount"></span></p>
+        </div>
+        
+    </div>
+
+    <script>
+        let tradeStarted = false;
+        let timer;
+    
+        document.getElementById('start-trading').addEventListener('click', function() {
+            const coin = document.getElementById('coin').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const direction = document.getElementById('direction').value;
+    
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+    
+            if (tradeStarted) {
+                alert("You are already trading!");
+                return;
+            }
+    
+            // Start the trade
+            tradeStarted = true;
+            const timeLimit = 30;  // seconds
+            let countdown = timeLimit;
+    
+            // Show timer
+            const timerElement = document.getElementById('timer');
+            timerElement.innerHTML = `Time left: ${countdown}s`;
+    
+            // Start countdown
+            timer = setInterval(() => {
+                countdown--;
+                timerElement.innerHTML = `Time left: ${countdown}s`;
+    
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    calculateProfit(amount, direction);
+                }
+            }, 1000);
+        });
+    
+        function calculateProfit(amount, direction) {
+            // Simulate market outcome: Randomly decide if the market goes up or down
+            const marketDirection = Math.random() > 0.5 ? 'up' : 'down';
+            const win = direction === marketDirection;
+    
+            // Calculate the 12% profit
+            const profit = amount * 0.12;
+            const totalAmount = amount + profit;
+    
+            // Show the result
+            document.getElementById('trade-result').style.display = 'block';
+            if (win) {
+                document.getElementById('profit-amount').innerText = `$${profit.toFixed(2)} (Total: $${totalAmount.toFixed(2)})`;
+            } else {
+                document.getElementById('profit-amount').innerText = `You lost your trade. Try again!`;
+            }
+    
+            // Reset tradeStarted flag to allow for new trades
+            tradeStarted = false; // Reset the flag so the user can trade again
+    
+            // Optional: Add a little delay before allowing another trade
+            setTimeout(() => {
+                document.getElementById('trade-result').style.display = 'none';
+            }, 5000); // Hide the result after 5 seconds (you can adjust this as needed)
+        }
+    </script>
+    
+    
+</body>
+</html>

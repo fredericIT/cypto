@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - Crypto Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/profile_kyc.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>📜 Transaction History</h2>
+
+        {% if transactions %}
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Coin</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr>
+                    <td>{{ tx.type }}</td>
+                    <td>{{ tx.coin }}</td>
+                    <td>{{ tx.amount }}</td>
+                    <td>{{ tx.status }}</td>
+                    <td>{{ tx.date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No transactions yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

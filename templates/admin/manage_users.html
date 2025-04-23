@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Platform - Manage Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/forms.css') }}">
+</head>
+<body class="bg-dark text-light">
+    <div class="admin-container" style="max-width: 900px !important;">
+        <div class="admin-header">
+            <h2>🌟 Manage Users</h2>
+            <p>Here you can manage registered users on the platform</p>
+        </div>
+
+        <div class="user-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.full_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-view">👁 View</a>
+                            <a href="{{ url_for('admin.update_user_balance', user_id=user.id) }}" class="btn btn-update">💰 Update Balance</a>
+                            <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="btn btn-delete">❌ Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-logout">🚪 Back to Dashboard</a>
+    </div>
+</body>
+</html>

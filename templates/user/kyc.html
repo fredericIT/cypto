@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KYC Verification - Crypto Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/profile_kyc.css') }}">
+    <style>
+        .flash-messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+
+        <h2>🔐 KYC Verification</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="document_type">Document Type</label>
+                <select id="document_type" name="document_type" required>
+                    <option value="passport">Passport</option>
+                    <option value="national_id">National ID</option>
+                    <option value="driver_license">Driver’s License</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="document_front">Upload Front Side of Document</label>
+                <input type="file" id="document_front" name="document_front" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label for="document_back">Upload Back Side of Document (if applicable)</label>
+                <input type="file" id="document_back" name="document_back" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label for="selfie_with_id">Upload a Selfie Holding Your Document</label>
+                <input type="file" id="selfie_with_id" name="selfie_with_id" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit KYC</button>
+        </form>
+
+        <div class="note">
+            📄 Please ensure all documents and the selfie are clear and readable.
+        </div>
+    </div>
+</body>
+</html>

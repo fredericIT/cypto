@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Crypto Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user/profile_kyc.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>🔔 Notifications</h2>
+
+        {% if notifications %}
+            <ul class="notification-list">
+                {% for note in notifications %}
+                <li class="notification-item {{ note.type }}">
+                    <strong>{{ note.title }}</strong><br>
+                    <small>{{ note.message }}</small><br>
+                    <small><em>{{ note.date }}</em></small>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No notifications yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

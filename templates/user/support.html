@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support - Crypto Platform</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/user/profile_kyc.css') }}"> -->
+    <style>
+        /* Support Page Style */
+body {
+    font-family: 'Orbitron', sans-serif;
+    background-color: #0b0f1a;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #1a1f2b;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #00ffff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #00ffcc;
+}
+
+input[type="text"], textarea {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #111420;
+    color: #ffffff;
+    font-size: 16px;
+    resize: none;
+}
+
+textarea {
+    min-height: 120px;
+}
+
+.btn-submit {
+    margin-top: 25px;
+    padding: 12px;
+    background: linear-gradient(135deg, #00c3ff, #0077ff);
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #0077ff, #00c3ff);
+}
+
+.flash-messages {
+    margin-top: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.alert.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert.error {
+    background-color: #dc3545;
+    color: white;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🛟 Support Center</h2>
+
+        <form method="POST">
+            <label for="subject">Subject:</label>
+            <input type="text" name="subject" required>
+
+            <label for="message">Message:</label>
+            <textarea name="message" rows="5" required></textarea>
+
+            <button type="submit" class="btn-submit">Submit Ticket</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

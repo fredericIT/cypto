@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Platform - View User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/forms.css') }}">
+    <style>
+
+
+
+.user-details {
+    margin-top: 30px;
+}
+
+.user-details h3 {
+    color: #00e5ff;
+    margin-bottom: 10px;
+}
+
+.user-info p,
+.user-balances ul {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.user-balances ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.user-balances li {
+    margin: 5px 0;
+}
+
+.user-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 10px 15px;
+    background-color: #00e5ff;
+    color: #0e0e0e;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #00b8d4;
+}
+
+.btn-update {
+    background-color: #4caf50;
+}
+
+.btn-update:hover {
+    background-color: #45a049;
+}
+
+.btn-back {
+    background-color: #ff9800;
+}
+
+.btn-back:hover {
+    background-color: #fb8c00;
+}
+
+    </style>
+</head>
+<body class="bg-dark text-light">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>👤 User Details</h2>
+            <p>Here you can view the full details of the user.</p>
+        </div>
+
+        <div class="user-details">
+            <h3>User Information</h3>
+            <div class="user-info">
+                <p><strong>Name:</strong> {{ user.full_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Role:</strong> {{ user.role }}</p>
+                <p><strong>Wallet Address:</strong> {{ user.wallet_address }}</p>
+            </div>
+
+            <h3>User Balances</h3>
+            <div class="user-balances">
+                <ul>
+                    {% for coin, balance in user.balances.items() %}
+                        <li>{{ coin }}: {{ balance }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="user-actions">
+                <a href="{{ url_for('manage_users') }}" class="btn btn-back">🔙 Back to Manage Users</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
