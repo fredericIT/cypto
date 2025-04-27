@@ -34,7 +34,7 @@ def deposit():
 def withdraw():
   
     if request.method == 'POST':
-        session.pop('_flashes', None)
+          session.pop('_flashes', None)
         try:
        
             withdraw_address = request.form['withdraw_address'].strip()

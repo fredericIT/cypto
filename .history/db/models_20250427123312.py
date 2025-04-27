@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     # Updated relationships
     kyc = db.relationship('KYC', back_populates='user', uselist=False, cascade='all, delete-orphan')
     account = db.relationship('Account', back_populates='user', uselist=False, cascade='all, delete-orphan')
-    btc_wallet = db.relationship('BTCWallet', back_populates='user', cascade="all, delete-orphan", uselist=False)
+    btc_wallet = db.relationship('BTCWallet', back_populates='user', cascade='all, delete-orphan', uselist=False)
     eth_wallet = db.relationship('ETHWallet', back_populates='user', cascade='all, delete-orphan', uselist=False)
     usdt_wallet = db.relationship('USDTWallet', back_populates='user', cascade='all, delete-orphan', uselist=False)
     bnb_wallet = db.relationship('BNBWallet', back_populates='user', cascade='all, delete-orphan', uselist=False)
@@ -49,30 +49,33 @@ class BTCWallet(db.Model):
     __tablename__ = 'btc_wallets'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False,  unique=True)
     deposit = db.Column(db.String(255), nullable=False)
     withdraw= db.Column(db.String(255), nullable=False)
     deposit_key = db.Column(db.String(255), nullable=False)
     withdraw_key = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
+    
     user = db.relationship('User', back_populates='btc_wallet')
 
 class ETHWallet(db.Model):
     __tablename__ = 'eth_wallets'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
     deposit = db.Column(db.String(255), nullable=False)
     withdraw = db.Column(db.String(255), nullable=False)
     deposit_key = db.Column(db.String(255), nullable=False)
     withdraw_key = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
     user = db.relationship('User', back_populates='eth_wallet')
+
 class USDTWallet(db.Model):
     __tablename__ = 'usdt_wallets'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False,unique=True)
     deposit = db.Column(db.String(255), nullable=False)
     withdraw = db.Column(db.String(255), nullable=False)
     deposit_key = db.Column(db.String(255), nullable=False)
@@ -80,21 +83,20 @@ class USDTWallet(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     network = db.Column(db.String(50), nullable=False, default='TRC20')  # Could be ERC20 or TRC20
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
     user = db.relationship('User', back_populates='usdt_wallet')
+
 class BNBWallet(db.Model):
     __tablename__ = 'bnb_wallets'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
     deposit = db.Column(db.String(255), nullable=False)
     withdraw = db.Column(db.String(255), nullable=False)
     deposit_key = db.Column(db.String(255), nullable=False)
     withdraw_key = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
     user = db.relationship('User', back_populates='bnb_wallet')
-
 
  
  
@@ -103,19 +105,18 @@ class KYC(db.Model):
     __tablename__ = 'kyc_verifications'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user = db.relationship('User', back_populates='kyc')
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     full_name = db.Column(db.String(100), nullable=False)
     document_type = db.Column(db.String(50), nullable=False)
     document_front_path = db.Column(db.String(255), nullable=False)
     document_back_path = db.Column(db.String(255))
     selfie_with_id_path = db.Column(db.String(255), nullable=False)
-    status = db.Column(db.String(20), default='pending')  
+    status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
     submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
     reviewed_at = db.Column(db.DateTime)
     reviewer_notes = db.Column(db.Text)
     
+    user = db.relationship('User', back_populates='kyc')
     
     def __repr__(self):
         return f'<KYC {self.id} - {self.status}>'
@@ -125,9 +126,8 @@ class Transaction(db.Model):
     __tablename__ = 'transactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
-
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     amount = db.Column(db.Numeric(precision=18, scale=8), nullable=False)
     coin = db.Column(SQLAlchemyEnum(Coins), nullable=False)   
     status = db.Column(db.String(20), nullable=False, default='pending')   
@@ -146,9 +146,7 @@ class Notification(db.Model):
     __tablename__ = 'notifications'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, order_by='Notification.created_at.desc()', cascade="all, delete-orphan"))
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     message = db.Column(db.Text, nullable=False)
     notification_type = db.Column(db.String(20), default='info')  # info, success, warning, danger
@@ -180,6 +178,7 @@ class SupportTicket(db.Model):
     __tablename__ = 'support_tickets'
     
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     subject = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
     status = db.Column(db.Enum(TicketStatus), default=TicketStatus.OPEN)
@@ -187,26 +186,25 @@ class SupportTicket(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     admin_notes = db.Column(db.Text)
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user = db.relationship('User', backref=db.backref('support_tickets', lazy=True,))
-
+    # Relationships
+    user = db.relationship('User', backref=db.backref('support_tickets', lazy=True))
     replies = db.relationship('TicketReply', backref='ticket', lazy=True, order_by='TicketReply.created_at')
     
     def __repr__(self):
         return f'<SupportTicket {self.id} - {self.subject}>'
-    
+
 class TicketReply(db.Model):
     __tablename__ = 'ticket_replies'
-
+    
     id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     is_admin_reply = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    user = db.relationship('User', passive_deletes=True)   
+    
+    # Relationships
+    user = db.relationship('User')
+    
     def __repr__(self):
         return f'<TicketReply {self.id} - {self.message[:50]}>'
-
- 

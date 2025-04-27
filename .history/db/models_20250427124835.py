@@ -194,19 +194,19 @@ class SupportTicket(db.Model):
     
     def __repr__(self):
         return f'<SupportTicket {self.id} - {self.subject}>'
-    
+
 class TicketReply(db.Model):
     __tablename__ = 'ticket_replies'
-
+    
     id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     is_admin_reply = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('ticket_replies',))
 
-    user = db.relationship('User', passive_deletes=True)   
+
     def __repr__(self):
         return f'<TicketReply {self.id} - {self.message[:50]}>'
-
- 

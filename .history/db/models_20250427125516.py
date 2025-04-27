@@ -205,8 +205,26 @@ class TicketReply(db.Model):
     is_admin_reply = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    user = db.relationship('User', passive_deletes=True)   
+    user = db.relationship('User', passive_deletes=True)   # <- 🧠 important
+    # ticket = db.relationship('SupportTicket', backref=db.backref('replies', lazy=True, order_by='TicketReply.created_at'))
     def __repr__(self):
         return f'<TicketReply {self.id} - {self.message[:50]}>'
 
- 
+# class TicketReply(db.Model):
+#     __tablename__ = 'ticket_replies'
+    
+#     id = db.Column(db.Integer, primary_key=True)
+
+#     message = db.Column(db.Text, nullable=False)
+#     is_admin_reply = db.Column(db.Boolean, default=False)
+#     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+#     user = db.relationship('User', backref=db.backref('ticket_replies',))
+#     ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+
+
+
+#     def __repr__(self):
+#         return f'<TicketReply {self.id} - {self.message[:50]}>'

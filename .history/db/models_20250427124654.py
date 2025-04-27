@@ -104,7 +104,7 @@ class KYC(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user = db.relationship('User', back_populates='kyc')
+    user = db.relationship('User', back_populates='kyc', cascade="all, delete-orphan")
 
     full_name = db.Column(db.String(100), nullable=False)
     document_type = db.Column(db.String(50), nullable=False)
@@ -188,25 +188,25 @@ class SupportTicket(db.Model):
     admin_notes = db.Column(db.Text)
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    user = db.relationship('User', backref=db.backref('support_tickets', lazy=True,))
+    user = db.relationship('User', backref=db.backref('support_tickets', lazy=True, cascade="all, delete-orphan"))
 
     replies = db.relationship('TicketReply', backref='ticket', lazy=True, order_by='TicketReply.created_at')
     
     def __repr__(self):
         return f'<SupportTicket {self.id} - {self.subject}>'
-    
+
 class TicketReply(db.Model):
     __tablename__ = 'ticket_replies'
-
+    
     id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     is_admin_reply = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('ticket_replies', cascade="all, delete-orphan"))
 
-    user = db.relationship('User', passive_deletes=True)   
+
     def __repr__(self):
         return f'<TicketReply {self.id} - {self.message[:50]}>'
-
- 

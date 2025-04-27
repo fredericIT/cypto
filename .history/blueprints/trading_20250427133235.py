@@ -13,6 +13,7 @@ from flask_login import login_required
 trading_bprt= Blueprint("trading",__name__, url_prefix="/trading")
 
 
+    
 @trading_bprt.route('/trade', methods=["GET", "POST"])
 @login_required
 def trade():
@@ -21,38 +22,39 @@ def trade():
         try:
             traded_amount = Decimal(str(request.json.get("amount")))
             traded_coin = request.json.get("coin")
+            print("Coin: ", traded_coin)
 
+            # Calculate profit (12% of traded amount)
             profit = traded_amount * Decimal("0.12")
+            print(f"Calculated profit: {profit}")
 
             coin_enum = Coins(traded_coin)
             
+            # Explicitly fetch current user's account from the database
             user_account = Account.query.filter_by(user_id=current_user.id).first()
             if user_account is None:
                 raise ValueError("User account not found.")
-            balance = 0
-            if coin_enum == Coins.BTC:
-                balance = user_account.BTC
-            elif coin_enum == Coins.ETH:
-                balance = user_account.ETH
-            elif coin_enum == Coins.USDT:
-                balance = user_account.USDT
-            elif coin_enum == Coins.BNB:
-                balance = user_account.BNB
-            else:
-                raise ValueError("Invalid coin type.")
+
+            # Fetch the balance from the account
+            balance = Decimal(str(getattr(user_account, traded_coin, 0)))
             print(f"Current balance for {traded_coin}: {balance}")
 
+            # Add profit to the existing balance
             new_balance = balance + profit
             print(f"New balance after adding profit: {new_balance}")
 
+            # Update the balance in the user's account
             setattr(user_account, coin_enum.name, new_balance)
 
+            # Commit the updated balance to the database
             db.session.add(user_account)
             db.session.commit()
 
+            # Ensure the balance was updated correctly
             updated_balance = getattr(user_account, coin_enum.name)
             print(f"Updated balance for {traded_coin}: {updated_balance}")
 
+            # Create transaction record
             transaction = Transaction(
                 sender_id=current_user.id,
                 receiver_id=current_user.id,
@@ -63,8 +65,11 @@ def trade():
             )
             db.session.add(transaction)
 
+            # Commit the transaction
             db.session.commit()
 
+            # Log the final state after commit
+            print(f"Transaction committed. Final balance for {traded_coin}: {updated_balance}")
 
             return jsonify({
                 "success": True,
@@ -83,6 +88,7 @@ def trade():
                 "new_balance": float(getattr(user_account, traded_coin, 0)) if 'traded_coin' in locals() else 0
             })
 
+    # GET request handling remains the same
     balances = {
         'BTC': [current_user.account.BTC, Coins.BTC],
         'ETH': [current_user.account.ETH, Coins.ETH],
@@ -90,3 +96,6 @@ def trade():
         'BNB': [current_user.account.BNB, Coins.BNB]
     }
     return render_template('user/trade.html', balances=balances)
+
+
+

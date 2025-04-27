@@ -6,7 +6,6 @@
     <title>Coin Base - Manage Users</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/admin.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/forms.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
      
         .btn {
@@ -71,18 +70,6 @@
             <h2>🌟 Manage Users</h2>
             <p>Here you can manage registered users on the platform</p>
         </div>
-           <!-- FLASH MESSAGES -->
-           {% with messages = get_flashed_messages(with_categories=true) %}
-           {% if messages %}
-             <div class="flash-messages">
-               {% for category, message in messages %}
-                 <div class="alert alert-{{ category }}">
-                   {{ message }}
-                 </div>
-               {% endfor %}
-             </div>
-           {% endif %}
-         {% endwith %}
 
         <div class="user-list">
             <table>
