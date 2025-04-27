@@ -125,9 +125,9 @@ class Transaction(db.Model):
     __tablename__ = 'transactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+
     amount = db.Column(db.Numeric(precision=18, scale=8), nullable=False)
     coin = db.Column(SQLAlchemyEnum(Coins), nullable=False)   
     status = db.Column(db.String(20), nullable=False, default='pending')   

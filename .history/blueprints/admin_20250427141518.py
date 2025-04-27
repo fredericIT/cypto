@@ -191,18 +191,23 @@ def delete_user(user_id):
     if current_user.id == user_id:
         flash('You cannot delete your own account', 'danger')
         return redirect(url_for('admin.manage_users'))
-    
+        
     user = User.query.get_or_404(user_id)
     
-    # Optionally reassign or delete tickets associated with the user
-    SupportTicket.query.filter_by(user_id=user_id).update({"user_id": None})  # Or you can delete tickets instead
+    # Handling support tickets before deletion
+    for ticket in user.support_tickets:
+        ticket.user_id = None  # Or assign it to an admin user_id: ticket.user_id = admin_user_id
+        # Alternatively, delete the ticket: db.session.delete(ticket)
+    
+    # Handling notifications before deletion
+    if user.notifications:
+        user.notifications.user_id = None  # Or db.session.delete(user.notifications)
     
     db.session.delete(user)
     db.session.commit()
     
     flash('User deleted successfully!', 'success')
     return redirect(url_for('admin.manage_users'))
-
 
 
 @admin_bprt.route('/review-kyc')

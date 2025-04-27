@@ -125,9 +125,9 @@ class Transaction(db.Model):
     __tablename__ = 'transactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+
     amount = db.Column(db.Numeric(precision=18, scale=8), nullable=False)
     coin = db.Column(SQLAlchemyEnum(Coins), nullable=False)   
     status = db.Column(db.String(20), nullable=False, default='pending')   
@@ -141,12 +141,13 @@ class Transaction(db.Model):
 
  
 
+# models.py
 class Notification(db.Model):
     __tablename__ = 'notifications'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=True)
-    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, order_by='Notification.created_at.desc()',))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, order_by='Notification.created_at.desc()' )
 
     title = db.Column(db.String(100), nullable=False)
     message = db.Column(db.Text, nullable=False)
@@ -155,6 +156,7 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     link = db.Column(db.String(255))   
     
+    user = db.relationship('User', backref=db.backref('user_notifications', lazy=True, order_by='Notification.created_at.desc()'))
     
     def __repr__(self):
         return f'<Notification {self.id} - {self.title}>'
@@ -184,8 +186,7 @@ class SupportTicket(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     admin_notes = db.Column(db.Text)
     
-    # In SupportTicket model, change to:
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     user = db.relationship('User', backref=db.backref('support_tickets', lazy=True,))
 
     replies = db.relationship('TicketReply', backref='ticket', lazy=True, order_by='TicketReply.created_at')
@@ -197,7 +198,7 @@ class TicketReply(db.Model):
     __tablename__ = 'ticket_replies'
 
     id = db.Column(db.Integer, primary_key=True)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=True)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('support_tickets.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     message = db.Column(db.Text, nullable=False)
     is_admin_reply = db.Column(db.Boolean, default=False)

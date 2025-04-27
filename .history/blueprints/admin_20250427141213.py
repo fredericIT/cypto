@@ -185,24 +185,25 @@ def update_user_balance(user_id):
 
 @admin_bprt.route('/delete-user/<int:user_id>', methods=['POST', 'GET'])
 @login_required
+# Ensure we cascade delete notifications when deleting a user:
 def delete_user(user_id):
     session.pop('_flashes', None)
     
     if current_user.id == user_id:
         flash('You cannot delete your own account', 'danger')
         return redirect(url_for('admin.manage_users'))
-    
+        
     user = User.query.get_or_404(user_id)
     
-    # Optionally reassign or delete tickets associated with the user
-    SupportTicket.query.filter_by(user_id=user_id).update({"user_id": None})  # Or you can delete tickets instead
+    # Ensure we set notifications to have a valid user_id or delete them
+    for notification in user.notifications:
+        notification.user_id = None  # Or delete: db.session.delete(notification)
     
     db.session.delete(user)
     db.session.commit()
     
     flash('User deleted successfully!', 'success')
     return redirect(url_for('admin.manage_users'))
-
 
 
 @admin_bprt.route('/review-kyc')
