@@ -1,1 +1,4 @@
 # CRYPTO
+``` 
+Run NPM start
+```
